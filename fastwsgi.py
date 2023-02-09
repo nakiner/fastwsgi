@@ -29,6 +29,7 @@ class _Server():
         self.max_chunk_size = None      # def value: 256 KiB
         self.read_buffer_size = None    # def value: 64 KiB
         self.nowait = 0
+        self.threads = 1
         
     def init(self, app, host = None, port = None, backlog = None, loglevel = None):
         self.app = app
@@ -56,24 +57,22 @@ server = _Server()
 
 # -------------------------------------------------------------------------------------
 
-NUM_WORKERS = 4
-
-def run_multi_process_server(app):
+def run_multi_process_server(app, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel, threads = server.threads):
     workers = []
-    for _ in range(NUM_WORKERS):
+    for _ in range(threads):
         pid = os.fork()
         if pid > 0:
             workers.append(pid)
             print(f"Worker process added with PID: {pid}")
         else:
             try:
-                server.init(app)
+                server.init(app, host, port, backlog, loglevel)
                 server.run()
             except KeyboardInterrupt:
                 sys.exit(0)
 
     try:
-        for _ in range(NUM_WORKERS):
+        for _ in range(threads):
             os.wait()
     except KeyboardInterrupt:
         print("\nStopping all workers")
@@ -138,10 +137,12 @@ def run_from_cli(host, port, wsgi_app_import_string, loglevel):
 
 # -------------------------------------------------------------------------------------
 
-def run(wsgi_app, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel):
+def run(wsgi_app, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel, threads = server.threads):
     print_server_details(host, port)
-    print(f"Running on PID:", os.getpid())
-    server.init(wsgi_app, host, port, backlog, loglevel)
-    print(f"Server listening at http://{host}:{port}")
-    server.run()    
-    # run_multi_process_server(wsgi_app)
+    if threads > 1:
+        run_multi_process_server(wsgi_app, host, port, backlog, loglevel)
+    if threads <= 1:
+        print(f"Running on PID:", os.getpid())
+        server.init(wsgi_app, host, port, backlog, loglevel)
+        print(f"Server listening at http://{host}:{port}")
+        server.run()
