@@ -68,7 +68,7 @@ def run_multi_process_server(app, host = server.host, port = server.port, backlo
             try:
                 server.init(app, host, port, backlog, loglevel)
                 server.run()
-                print("spawned fork thread...")
+                print(f"spawned fork thread...")
             except KeyboardInterrupt:
                 sys.exit(0)
 
@@ -141,7 +141,8 @@ def run_from_cli(host, port, wsgi_app_import_string, loglevel):
 def run(wsgi_app, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel, threads = server.threads):
     print_server_details(host, port)
     if threads > 1:
-        run_multi_process_server(wsgi_app, host, port, backlog, loglevel)
+        print(f"Server multiple workers listening at http://{host}:{port}")
+        run_multi_process_server(wsgi_app, host, port, backlog, loglevel, threads)
     if threads <= 1:
         print(f"Running on PID:", os.getpid())
         server.init(wsgi_app, host, port, backlog, loglevel)
