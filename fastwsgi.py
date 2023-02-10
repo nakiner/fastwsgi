@@ -57,7 +57,7 @@ server = _Server()
 
 # -------------------------------------------------------------------------------------
 
-def run_multi_process_server(app, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel, threads = server.threads):
+def run_multi_process_server(app, threads, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel):
     workers = []
     for _ in range(threads):
         pid = os.fork()
@@ -66,11 +66,9 @@ def run_multi_process_server(app, host = server.host, port = server.port, backlo
             print(f"Worker process added with PID: {pid}")
         else:
             try:
-                
                 server.init(app, host, port, backlog, loglevel)
                 server.run()
                 print("spawned fork thread...")
-                sys.exit(0)
             except KeyboardInterrupt:
                 sys.exit(0)
 
@@ -144,8 +142,8 @@ def run(wsgi_app, host = server.host, port = server.port, backlog = server.backl
     print_server_details(host, port)
     if threads > 1:
         print(f"Server multiple workers listening at http://{host}:{port}")
-        run_multi_process_server(wsgi_app, host, port, backlog, loglevel, threads)
-    if threads <= 1:
+        run_multi_process_server(wsgi_app, threads, host, port, backlog, loglevel)
+    else:
         print(f"Running on PID:", os.getpid())
         server.init(wsgi_app, host, port, backlog, loglevel)
         print(f"Server listening at http://{host}:{port}")
