@@ -29,6 +29,7 @@ class _Server():
         self.max_chunk_size = None      # def value: 256 KiB
         self.read_buffer_size = None    # def value: 64 KiB
         self.nowait = 0
+        self.threads = 1
         
     def init(self, app, host = None, port = None, backlog = None, loglevel = None):
         self.app = app
@@ -56,7 +57,7 @@ server = _Server()
 
 # -------------------------------------------------------------------------------------
 
-def run_multi_process_server(app, threads, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel):
+def run_multi_process_server(app, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel, threads = server.threads):
     workers = []
     for i in range(threads):
         pid = os.fork()
@@ -137,11 +138,11 @@ def run_from_cli(host, port, wsgi_app_import_string, loglevel):
 
 # -------------------------------------------------------------------------------------
 
-def run(wsgi_app, threads, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel):
+def run(wsgi_app, host = server.host, port = server.port, backlog = server.backlog, loglevel = server.loglevel, threads = server.threads):
     print_server_details(host, port)
     if threads > 1:
         print(f"Server multiple workers listening at http://{host}:{port}")
-        run_multi_process_server(wsgi_app, threads, host, port, backlog, loglevel)
+        run_multi_process_server(wsgi_app, host, port, backlog, loglevel, threads)
     else:
         print(f"Running on PID:", os.getpid())
         server.init(wsgi_app, host, port, backlog, loglevel)
