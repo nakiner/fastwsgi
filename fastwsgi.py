@@ -22,7 +22,7 @@ class _Server():
         self.host = "0.0.0.0"
         self.port = 5000
         self.backlog = 1024
-        self.loglevel = LL_TRACE
+        self.loglevel = LL_ERROR
         self.hook_sigint = 2
         self.allow_keepalive = 1
         self.max_content_length = None  # def value: 999999999
@@ -66,9 +66,11 @@ def run_multi_process_server(app, host = server.host, port = server.port, backlo
             print(f"Worker process added with PID: {pid}")
         else:
             try:
+                
                 server.init(app, host, port, backlog, loglevel)
                 server.run()
                 print("spawned fork thread...")
+                sys.exit(0)
             except KeyboardInterrupt:
                 sys.exit(0)
 
