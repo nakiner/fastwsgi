@@ -22,7 +22,7 @@ class _Server():
         self.host = "0.0.0.0"
         self.port = 5000
         self.backlog = 1024
-        self.loglevel = LL_ERROR
+        self.loglevel = LL_TRACE
         self.hook_sigint = 2
         self.allow_keepalive = 1
         self.max_content_length = None  # def value: 999999999
@@ -68,7 +68,7 @@ def run_multi_process_server(app, host = server.host, port = server.port, backlo
             try:
                 server.init(app, host, port, backlog, loglevel)
                 server.run()
-                print(f"spawned fork thread...")
+                print("spawned fork thread...")
             except KeyboardInterrupt:
                 sys.exit(0)
 
