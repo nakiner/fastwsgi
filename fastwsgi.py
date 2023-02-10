@@ -68,6 +68,7 @@ def run_multi_process_server(app, host = server.host, port = server.port, backlo
             try:
                 server.init(app, host, port, backlog, loglevel)
                 server.run()
+                print("spawned fork thread...")
             except KeyboardInterrupt:
                 sys.exit(0)
 
