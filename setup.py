@@ -17,7 +17,7 @@ with open("README.md", "r", encoding="utf-8") as read_me:
 
 setup(
     name="fastwsgi",
-    version="0.0.7",
+    version="1.0.0",
     license="MIT",
     author="James Roberts",
     py_modules=["fastwsgi"],
@@ -26,10 +26,10 @@ setup(
     description="An ultra fast WSGI server for Python 3",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/jamesroberts/fastwsgi",
+    url="https://github.com/nakiner/fastwsgi",
     project_urls={
-        "Bug Tracker": "https://github.com/jamesroberts/fastwsgi/issues",
-        "Source": "https://github.com/jamesroberts/fastwsgi",
+        "Bug Tracker": "https://github.com/nakiner/fastwsgi/issues",
+        "Source": "https://github.com/nakiner/fastwsgi",
     },
     classifiers=[
         "License :: OSI Approved :: MIT License",
